@@ -5,8 +5,7 @@ import { AuthContext } from '../context/AuthContext';
 import { Mail, Lock, Terminal } from 'lucide-react';
 
 // 🚨 FORCED STRICT BINDING ON OPERATIONAL PORT 5002
-const BACKEND_URL = 'http://localhost:5002/api';
-
+const BACKEND_URL = import.meta.env.VITE_API_URL || 'http://localhost:5002/api';
 export default function Login() {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
