@@ -18,7 +18,7 @@ import {
 import Background from '../components/Background';
 
 // 🚨 MASTER RUNNING BACKEND NODE ROUTE LOCK
-const BACKEND_URL = 'http://localhost:5002/api';
+const BACKEND_URL = import.meta.env.VITE_API_URL || 'http://localhost:5002/api';
 
 export default function Internships() {
   const { user } = useContext(AuthContext);
