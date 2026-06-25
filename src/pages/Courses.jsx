@@ -8,7 +8,7 @@ import { BookOpen, Clock, ArrowRight, ShieldCheck, Loader2, Terminal, CheckCircl
 import Background from '../components/Background';
 
 // 🚨 PORT 5002 NODE CONSTANT LINKAGE
-const BACKEND_URL = 'http://localhost:5002/api';
+const BACKEND_URL = import.meta.env.VITE_API_URL || 'http://localhost:5002/api';
 
 export default function Courses() {
   const { user } = useContext(AuthContext);

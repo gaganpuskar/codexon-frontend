@@ -3,6 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Award, XCircle } from 'lucide-react';
 import axios from 'axios';
 
+// 🚀 LIVE ENVIRONMENT VARIABLE FALLBACK CONFIGURATION
+const BACKEND_URL = import.meta.env.VITE_API_URL || 'http://localhost:5002/api';
+
 export default function Quiz() {
   const { courseId } = useParams();
   const navigate = useNavigate();
@@ -14,7 +17,8 @@ export default function Quiz() {
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user'));
     const config = { headers: { Authorization: `Bearer ${user?.token}` } };
-    axios.get(`http://localhost:5000/api/quizzes/course/${courseId}`, config)
+    // Updated to dynamic BACKEND_URL variable
+    axios.get(`${BACKEND_URL}/quizzes/course/${courseId}`, config)
       .then(res => setQuiz(res.data))
       .catch(err => console.error(err));
   }, [courseId]);
@@ -24,7 +28,8 @@ export default function Quiz() {
       const user = JSON.parse(localStorage.getItem('user'));
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
       const orderedAnswers = quiz.questions.map((_, idx) => answers[idx] || "");
-      const res = await axios.post(`http://localhost:5000/api/quizzes/${quiz._id}/submit`, { answers: orderedAnswers }, config);
+      // Updated to dynamic BACKEND_URL variable
+      const res = await axios.post(`${BACKEND_URL}/quizzes/${quiz._id}/submit`, { answers: orderedAnswers }, config);
       setEvaluation(res.data);
       setSubmitted(true);
     } catch (err) {

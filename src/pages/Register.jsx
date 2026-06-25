@@ -3,8 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { User, Mail, Lock, ShieldCheck, Terminal, ArrowRight, AlertTriangle } from 'lucide-react';
 
-// 🚨 MASTER RUNNING BACKEND NODE ROUTE LOCK
-const BACKEND_URL = 'http://localhost:5002/api';
+const BACKEND_URL = import.meta.env.VITE_API_URL || 'http://localhost:5002/api';
 
 export default function Register() {
   const navigate = useNavigate();

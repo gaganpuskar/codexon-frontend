@@ -10,7 +10,7 @@ import {
 import Background from '../components/Background';
 
 // 🚨 PORT 5002 MASTER LINKED BINDING
-const BACKEND_URL = 'http://localhost:5002/api';
+const BACKEND_URL = import.meta.env.VITE_API_URL || 'http://localhost:5002/api';
 
 export default function Admin() {
   const { user } = useContext(AuthContext);
