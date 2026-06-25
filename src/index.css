@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+/* 🔮 PORTFOLIO EXACT DESIGN VARIABLE MATRIX (v4 STANDARD) */
+:root {
+  --font-sans: 'Outfit', sans-serif;
+  --bg: #0b0d17;
+  --surface: rgba(255, 255, 255, 0.04);
+  --border: rgba(255, 255, 255, 0.1);
+  --text: #e8eaf2;
+  --muted: #9aa0b5;
+}
+
+html, html.dark {
+  --bg: #0b0d17;
+  --surface: rgba(255, 255, 255, 0.04);
+  --border: rgba(255, 255, 255, 0.1);
+  --text: #e8eaf2;
+  --muted: #9aa0b5;
+}
+
+/* ☀️ LIGHT MODE EXACT PORTFOLIO COLOR VARIABLE MATRIX */
+html:not(.dark) {
+  --bg: #f4f6fb;
+  --surface: rgba(255, 255, 255, 0.7);
+  --border: rgba(20, 20, 40, 0.1);
+  --text: #15182a;
+  --muted: #5a6075;
+}
+
+/* GLOBAL THEME ENGINE TRIGGER BINDING */
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out;
+  margin: 0;
+  padding: 0;
+}
+
+/* Universal Glassmorphism Matrix Variable */
+.portfolio-glass {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* Scrollbar Suite */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 99px;
+}
