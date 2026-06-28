@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { 
   Terminal, Globe, Cpu, Smartphone, Layout, BarChart, 
   Cloud, ArrowRight, ShieldCheck, Smile, Award, Star, 
-  Mail, Phone, MapPin, Send
+  Mail, Phone, MapPin, Send, Briefcase, BookOpen, CheckCircle2
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -30,6 +30,13 @@ export default function Home() {
     { icon: <Layout className="text-[#ff5c8a]" />, title: "UI/UX Design", desc: "Beautiful, user-friendly designs that create memorable experiences for your users." },
     { icon: <BarChart className="text-yellow-400" />, title: "Digital Marketing & SEO", desc: "Drive traffic, generate leads and grow your brand with result-driven SEO and marketing." },
     { icon: <Cloud className="text-blue-400" />, title: "Cloud & DevOps", desc: "Deploy, manage and scale your applications with modern cloud solutions." }
+  ];
+
+  // NEW MODULE: INTERNSHIP VECTOR DATA
+  const internships = [
+    { title: "Full Stack Engineering", icon: <Terminal className="text-[#22d3ee]" />, desc: "Work with live production frameworks, core database clusters, and secure APIs.", duration: "3-6 Months", type: "Remote Node" },
+    { title: "Frontend Architecture", icon: <Layout className="text-[#7c5cff]" />, desc: "Design high-fidelity scannable client interfaces using Tailwind and state systems.", duration: "3 Months", type: "Hybrid Node" },
+    { title: "Cloud Infrastructure", icon: <Cloud className="text-[#ff5c8a]" />, desc: "Configure high-speed communication layers, DNS handlers, and microservice engines.", duration: "6 Months", type: "Remote Node" }
   ];
 
   return (
@@ -60,12 +67,12 @@ export default function Home() {
             </p>
             
             <div className="flex flex-wrap gap-4">
-              <Link to="/courses" className="bg-gradient-to-r from-[#7c5cff] to-[#22d3ee] hover:opacity-90 px-6 py-3 rounded-full font-bold text-sm flex items-center gap-2 text-white transition transform hover:-translate-y-0.5">
-                Get Started <ArrowRight size={16} />
+              <Link to="/register" className="bg-gradient-to-r from-[#7c5cff] to-[#22d3ee] hover:opacity-90 px-6 py-3 rounded-full font-bold text-sm flex items-center gap-2 text-white transition transform hover:-translate-y-0.5">
+                Launch Identity Hub <ArrowRight size={16} />
               </Link>
-              <button className="portfolio-glass px-6 py-3 rounded-full font-bold text-sm transition transform hover:-translate-y-0.5">
-                View Our Work →
-              </button>
+              <a href="#services" className="portfolio-glass px-6 py-3 rounded-full font-bold text-sm transition transform hover:-translate-y-0.5 flex items-center">
+                View IT Services →
+              </a>
             </div>
           </div>
 
@@ -74,18 +81,18 @@ export default function Home() {
             <img 
               src="/hero.png" 
               alt="Digital Solution Mockup" 
-              className="rounded-3xl border border-[var(--border)]  max-h-[430px] object-cover relative z-10"
+              className="rounded-3xl border border-[var(--border)] max-h-[430px] object-cover relative z-10"
             />
           </div>
         </div>
       </section>
 
-      {/* 2. SERVICES GRID SECTION */}
-      <section className="py-20 px-6 bg-transparent border-t border-[var(--border)] relative z-10">
+      {/* 2. SERVICES GRID SECTION (IT SERVICES AT CORE) */}
+      <section id="services" className="py-20 px-6 bg-transparent border-t border-[var(--border)] relative z-10">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <p className="text-xs text-[#22d3ee] font-bold uppercase tracking-widest mb-2">Our Services</p>
-            <h2 className="text-3xl md:text-4xl font-black tracking-tight">Complete Solutions for Your Business</h2>
+            <p className="text-xs text-[#22d3ee] font-bold uppercase tracking-widest mb-2">Our Enterprise Node</p>
+            <h2 className="text-3xl md:text-4xl font-black tracking-tight">Complete IT Solutions for Your Business</h2>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -111,8 +118,99 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3. WHY CHOOSE US & METRICS COUNTERS */}
-      <section className="py-20 px-6 max-w-7xl mx-auto relative z-10">
+      {/* 3. NEW FEATURE: INTERNSHIPS PROGRAM BLOCK */}
+      <section className="py-20 px-6 bg-transparent border-t border-[var(--border)] relative z-10">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16">
+            <div>
+              <p className="text-xs text-[#7c5cff] font-bold uppercase tracking-widest mb-2 flex items-center gap-2">
+                <Briefcase size={14} /> Career Growth Hub
+              </p>
+              <h2 className="text-3xl md:text-4xl font-black tracking-tight">Live Corporate Internships</h2>
+            </div>
+            <p className="text-[var(--muted)] max-w-md mt-4 md:mt-0 text-xs md:text-sm leading-relaxed">
+              Accelerate your portfolio dynamics by resolving real production issues within modern engineering frameworks.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {internships.map((intern, idx) => (
+              <motion.div 
+                whileHover={{ y: -5 }}
+                key={idx} 
+                className="portfolio-glass p-6 rounded-2xl flex flex-col justify-between group transition duration-300"
+              >
+                <div>
+                  <div className="w-12 h-12 rounded-xl bg-transparent flex items-center justify-center border border-[var(--border)] mb-5 group-hover:scale-105 transition">
+                    {intern.icon}
+                  </div>
+                  <h3 className="text-lg font-bold mb-2">{intern.title}</h3>
+                  <p className="text-xs text-[var(--muted)] leading-relaxed mb-6">{intern.desc}</p>
+                </div>
+                <div className="flex justify-between items-center text-[10px] font-bold tracking-wider uppercase text-[var(--muted)] border-t border-[var(--border)] pt-4 mt-auto">
+                  <span>{intern.duration}</span>
+                  <span className="text-[#22d3ee] bg-[#22d3ee]/10 px-2.5 py-1 rounded-md border border-[#22d3ee]/20">{intern.type}</span>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 4. NEW FEATURE: STRUCTURED E-LEARNING COURSES TERMINAL */}
+      <section className="py-20 px-6 bg-transparent border-t border-[var(--border)] relative z-10">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <p className="text-xs text-[#22d3ee] font-bold uppercase tracking-widest mb-2 flex items-center justify-center gap-2">
+              <BookOpen size={14} /> Knowledge System
+            </p>
+            <h2 className="text-3xl md:text-4xl font-black tracking-tight">Our Structured Training Tracks</h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Track 1 */}
+            <div className="portfolio-glass p-8 rounded-3xl flex flex-col justify-between border border-[var(--border)]">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-[#7c5cff] bg-[#7c5cff]/10 border border-[#7c5cff]/20 px-3 py-1 rounded-full">Architecture Node</span>
+                <h3 className="text-xl md:text-2xl font-black mt-4 mb-3">Advanced MERN Core Systems</h3>
+                <p className="text-xs text-[var(--muted)] leading-relaxed mb-6">
+                  Master production-grade API parameters, complex structural cloud configurations, schema optimizations, and custom cryptographic auth engines.
+                </p>
+                <ul className="space-y-3 mb-8 text-xs text-[var(--text)]">
+                  <li className="flex items-center gap-2 text-[var(--muted)]"><CheckCircle2 size={14} className="text-[#22d3ee]" /> React Hooks context state architectures</li>
+                  <li className="flex items-center gap-2 text-[var(--muted)]"><CheckCircle2 size={14} className="text-[#22d3ee]" /> Asynchronous node pipeline handlers</li>
+                  <li className="flex items-center gap-2 text-[var(--muted)]"><CheckCircle2 size={14} className="text-[#22d3ee]" /> Cloud clustering deployment tasks</li>
+                </ul>
+              </div>
+              <Link to="/courses" className="w-full text-center bg-gradient-to-r from-[#7c5cff] to-[#22d3ee] text-white py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition hover:opacity-90">
+                Initialize Course Track
+              </Link>
+            </div>
+
+            {/* Track 2 */}
+            <div className="portfolio-glass p-8 rounded-3xl flex flex-col justify-between border border-[var(--border)]">
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-[#22d3ee] bg-[#22d3ee]/10 border border-[#22d3ee]/20 px-3 py-1 rounded-full">Infrastructure Node</span>
+                <h3 className="text-xl md:text-2xl font-black mt-4 mb-3">Cloud Automation & DNS Systems</h3>
+                <p className="text-xs text-[var(--muted)] leading-relaxed mb-6">
+                  Learn to safely map enterprise domains, coordinate secure network tunnels, configure global web-mail pipelines, and track performance hooks.
+                </p>
+                <ul className="space-y-3 mb-8 text-xs text-[var(--text)]">
+                  <li className="flex items-center gap-2 text-[var(--muted)]"><CheckCircle2 size={14} className="text-[#7c5cff]" /> DNS Zone Editor config matrices (TXT/MX/DKIM)</li>
+                  <li className="flex items-center gap-2 text-[var(--muted)]"><CheckCircle2 size={14} className="text-[#7c5cff]" /> High-speed mailing API optimization routines</li>
+                  <li className="flex items-center gap-2 text-[var(--muted)]"><CheckCircle2 size={14} className="text-[#7c5cff]" /> Automated B2B server lifecycle deployment</li>
+                </ul>
+              </div>
+              <Link to="/courses" className="w-full text-center bg-gradient-to-r from-[#7c5cff] to-[#22d3ee] text-white py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition hover:opacity-90">
+                Initialize Course Track
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 5. WHY CHOOSE US & METRICS COUNTERS */}
+      <section className="py-20 px-6 max-w-7xl mx-auto relative z-10 border-t border-[var(--border)]">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-center">
           <div>
             <p className="text-xs text-[#22d3ee] font-bold uppercase tracking-widest mb-2">Why Choose Us</p>
@@ -146,7 +244,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. CONTACT INTEGRATED MATRIX */}
+      {/* 6. CONTACT INTEGRATED MATRIX */}
       <section className="py-20 px-6 bg-transparent border-t border-[var(--border)] relative z-10">
         <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-12">
           
@@ -188,7 +286,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 5. BRAND FOOTER LAYER */}
+      {/* 7. BRAND FOOTER LAYER */}
       <footer className="border-t border-[var(--border)] py-10 px-6 text-center text-xs text-[var(--muted)] relative z-10">
         <p>© 2026 CODEXON HUB. All rights reserved. Designed with ❤️ by CODEXON HUB.</p>
       </footer>
