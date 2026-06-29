@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios'; 
+import axios from 'react-redux'; // Note: inline matching default package choice preference
+import axiosDirect from 'axios'; 
 import { AuthContext } from '../context/AuthContext';
 import { 
   Plus, Trash2, Edit3, BookOpen, Briefcase, RefreshCw, 
-  FileText, Check, X, ExternalLink, GraduationCap, ShieldAlert, UserCheck, Award 
+  FileText, Check, X, ExternalLink, GraduationCap, ShieldAlert, UserCheck, Award,
+  Users, Phone, Building2, CalendarDays, ShieldCheck 
 } from 'lucide-react';
 
 // CORE PLATFORM IMPORTS
@@ -19,6 +21,10 @@ export default function Admin() {
   const [internships, setInternships] = useState([]);
   const [applications, setApplications] = useState([]);
   const [courseEnrollments, setCourseEnrollments] = useState([]); 
+  
+  // 🆕 NEW STATES: Real registered student database metrics collection
+  const [registeredStudents, setRegisteredStudents] = useState([]);
+  const [studentsLoading, setStudentsLoading] = useState(false);
 
   const [courseForm, setCourseForm] = useState({ title: '', description: '', duration: '', price: '', techStack: '' });
   const [internshipForm, setInternshipForm] = useState({ title: '', company: '', description: '', duration: '', stipend: '', skillsRequired: '' });
@@ -28,12 +34,10 @@ export default function Admin() {
 
   const fetchData = async () => {
     try {
-      const resC = await axios.get(`${BACKEND_URL}/courses`);
-      const resI = await axios.get(`${BACKEND_URL}/internships`);
-      const resA = await axios.get(`${BACKEND_URL}/admin/applications`, getAuthConfig());
-      
-      // Fetch dynamic enrollment payloads containing scores & certificate variables
-      const resE = await axios.get(`${BACKEND_URL}/courses/admin/enrollments`, getAuthConfig());
+      const resC = await axiosDirect.get(`${BACKEND_URL}/courses`);
+      const resI = await axiosDirect.get(`${BACKEND_URL}/internships`);
+      const resA = await axiosDirect.get(`${BACKEND_URL}/admin/applications`, getAuthConfig());
+      const resE = await axiosDirect.get(`${BACKEND_URL}/courses/admin/enrollments`, getAuthConfig());
       
       setCourses(resC.data); 
       setInternships(resI.data); 
@@ -44,8 +48,26 @@ export default function Admin() {
     }
   };
 
+  // 🆕 API HANDLER: Fetch all raw user profile entities signed up inside ecosystem
+  const fetchRegisteredStudents = async () => {
+    setStudentsLoading(true);
+    try {
+      const res = await axiosDirect.get(`${BACKEND_URL}/auth/students`);
+      if (res.data.success) {
+        setRegisteredStudents(res.data.data || []);
+      }
+    } catch (err) {
+      console.error("Failed pulling student matrices from auth routes:", err);
+    } finally {
+      setStudentsLoading(false);
+    }
+  };
+
   useEffect(() => { 
-    if (user) fetchData(); 
+    if (user) {
+      fetchData(); 
+      fetchRegisteredStudents();
+    }
   }, [user]);
 
   if (!user || user.role !== 'admin') {
@@ -65,7 +87,7 @@ export default function Admin() {
 
   const updateStatus = async (id, statusValue) => {
     try {
-      await axios.put(`${BACKEND_URL}/admin/applications/${id}`, { status: statusValue }, getAuthConfig());
+      await axiosDirect.put(`${BACKEND_URL}/admin/applications/${id}`, { status: statusValue }, getAuthConfig());
       fetchData();
     } catch (err) { alert(err.message); }
   };
@@ -81,10 +103,10 @@ export default function Admin() {
     };
     try {
       if (editId) { 
-        await axios.put(`${BACKEND_URL}/courses/${editId}`, payload, getAuthConfig()); 
+        await axiosDirect.put(`${BACKEND_URL}/courses/${editId}`, payload, getAuthConfig()); 
         alert("Course metrics updated.");
       } else { 
-        await axios.post(`${BACKEND_URL}/courses`, payload, getAuthConfig()); 
+        await axiosDirect.post(`${BACKEND_URL}/courses`, payload, getAuthConfig()); 
         alert("New course record successfully mapped.");
       }
       setCourseForm({ title: '', description: '', duration: '', price: '', techStack: '' }); 
@@ -95,7 +117,7 @@ export default function Admin() {
 
   const deleteCourse = async (id) => {
     if (confirm("Delete permanently?")) { 
-      await axios.delete(`${BACKEND_URL}/courses/${id}`, getAuthConfig()); 
+      await axiosDirect.delete(`${BACKEND_URL}/courses/${id}`, getAuthConfig()); 
       fetchData(); 
     }
   };
@@ -108,10 +130,10 @@ export default function Admin() {
     };
     try {
       if (editId) { 
-        await axios.put(`${BACKEND_URL}/internships/${editId}`, payload, getAuthConfig()); 
+        await axiosDirect.put(`${BACKEND_URL}/internships/${editId}`, payload, getAuthConfig()); 
         alert("Internship metrics updated.");
       } else { 
-        await axios.post(`${BACKEND_URL}/internships`, payload, getAuthConfig()); 
+        await axiosDirect.post(`${BACKEND_URL}/internships`, payload, getAuthConfig()); 
         alert("New vacancy deployed.");
       }
       setInternshipForm({ title: '', company: '', description: '', duration: '', stipend: '', skillsRequired: '' }); 
@@ -122,7 +144,7 @@ export default function Admin() {
 
   const deleteInternship = async (id) => {
     if (confirm("Delete permanently?")) { 
-      await axios.delete(`${BACKEND_URL}/internships/${id}`, getAuthConfig()); 
+      await axiosDirect.delete(`${BACKEND_URL}/internships/${id}`, getAuthConfig()); 
       fetchData(); 
     }
   };
@@ -140,7 +162,7 @@ export default function Admin() {
               PUSHKAR ADMIN GATEWAY
             </h1>
           </div>
-          <button onClick={fetchData} className="portfolio-glass p-2.5 rounded-xl text-[#22d3ee] transition">
+          <button onClick={() => { fetchData(); fetchRegisteredStudents(); }} className="portfolio-glass p-2.5 rounded-xl text-[#22d3ee] transition">
             <RefreshCw size={16} />
           </button>
         </div>
@@ -151,6 +173,9 @@ export default function Admin() {
           <button onClick={() => { setActiveTab('internships'); setEditId(null); }} className={`px-5 py-3 rounded-xl font-bold flex items-center gap-2 text-sm uppercase transition ${activeTab === 'internships' ? 'bg-[#22d3ee] text-white' : 'portfolio-glass text-[var(--muted)]'}`}><Briefcase size={16} /> Internships ({internships.length})</button>
           <button onClick={() => { setActiveTab('applications'); setEditId(null); }} className={`px-5 py-3 rounded-xl font-bold flex items-center gap-2 text-sm uppercase transition ${activeTab === 'applications' ? 'bg-emerald-600 text-white' : 'portfolio-glass text-[var(--muted)]'}`}><FileText size={16} /> Student Applications ({applications.length})</button>
           <button onClick={() => { setActiveTab('enrollments'); setEditId(null); }} className={`px-5 py-3 rounded-xl font-bold flex items-center gap-2 text-sm uppercase transition ${activeTab === 'enrollments' ? 'bg-amber-600 text-white' : 'portfolio-glass text-[var(--muted)]'}`}><UserCheck size={16} /> Course Enrollments ({courseEnrollments.length})</button>
+          
+          {/* 🆕 NEW CONTROL GATE: REGISTERED STUDENT PROFILES LEDGER TAB */}
+          <button onClick={() => { setActiveTab('students'); setEditId(null); fetchRegisteredStudents(); }} className={`px-5 py-3 rounded-xl font-bold flex items-center gap-2 text-sm uppercase transition ${activeTab === 'students' ? 'bg-indigo-600 text-white' : 'portfolio-glass text-[var(--muted)]'}`}><Users size={16} /> Registered Students ({registeredStudents.length})</button>
         </div>
 
         {activeTab === 'courses' || activeTab === 'internships' ? (
@@ -211,7 +236,6 @@ export default function Admin() {
             </div>
           </div>
         ) : activeTab === 'applications' ? (
-          /* Student Internship Applications logs view */
           <div className="portfolio-glass rounded-2xl overflow-hidden text-sm shadow-sm relative z-10">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
@@ -263,8 +287,7 @@ export default function Admin() {
               </table>
             </div>
           </div>
-        ) : (
-          /* 🚨 UPGRADED LIVE COURSE ENROLLMENTS TABLE: TRACKS SCORES AND CERTIFICATES LIVE */
+        ) : activeTab === 'enrollments' ? (
           <div className="portfolio-glass rounded-2xl overflow-hidden text-sm shadow-sm relative z-10 animate-fadeIn">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
@@ -289,7 +312,6 @@ export default function Admin() {
                           <BookOpen size={14} className="text-[#22d3ee]" /> {enr.courseTitle}
                         </span>
                       </td>
-                      {/* 🚨 DYNAMIC PERFORMANCE METRICS INJECTION */}
                       <td className="p-4 text-center font-mono text-xs font-bold">
                         {enr.quizScore !== undefined ? (
                           <span className={enr.quizScore >= 70 ? "text-emerald-400" : "text-amber-500"}>
@@ -321,6 +343,69 @@ export default function Admin() {
                     <tr>
                       <td colSpan="5" className="text-center py-12 text-[var(--muted)] font-mono text-xs uppercase tracking-widest">
                         No student registrations tracked inside core ledger nodes yet.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        ) : (
+          /* ======================================================================= */
+          /* 🆕 NEW VIEW NODE: DYNAMIC LIVE REGISTERED STUDENTS PROFILE LEDGER TABLE */
+          /* ======================================================================= */
+          <div className="portfolio-glass rounded-2xl overflow-hidden text-sm shadow-sm relative z-10 animate-fadeIn">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-[var(--bg)] text-[var(--muted)] text-xs uppercase border-b border-[var(--border)] font-black opacity-90">
+                    <th className="p-4 pl-6">Student Name</th>
+                    <th className="p-4">Contact & Email</th>
+                    <th className="p-4">College Entity</th>
+                    <th className="p-4">Degree Track</th>
+                    <th className="p-4 text-right pr-6">System Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {studentsLoading ? (
+                    <tr>
+                      <td colSpan="5" className="text-center py-12 text-[var(--muted)] font-mono text-xs uppercase tracking-widest animate-pulse">
+                        Syncing live data streams...
+                      </td>
+                    </tr>
+                  ) : registeredStudents.map((student) => (
+                    <tr key={student._id} className="border-b border-[var(--border)] hover:bg-white/5 transition duration-200">
+                      <td className="p-4 pl-6 font-bold text-[var(--text)] text-base">
+                        {student.name}
+                      </td>
+                      <td className="p-4 space-y-1">
+                        <div className="text-slate-200 font-medium">{student.email}</div>
+                        <div className="text-[var(--muted)] flex items-center gap-1 font-mono text-xs">
+                          <Phone size={11} className="text-[#22d3ee]" /> {student.mobile || 'N/A'}
+                        </div>
+                      </td>
+                      <td className="p-4 text-[var(--muted)] font-semibold flex items-center gap-1.5 pt-6">
+                        <Building2 size={13} className="text-[#7c5cff]" /> {student.college || 'N/A'}
+                      </td>
+                      <td className="p-4 space-y-0.5">
+                        <div className="text-[#22d3ee] font-bold flex items-center gap-1">
+                          <GraduationCap size={14} /> {student.degree || 'N/A'}
+                        </div>
+                        <div className="text-[var(--muted)] text-[10px] uppercase font-bold flex items-center gap-1 pl-0.5">
+                          <CalendarDays size={11} /> {student.semester || 'N/A'}
+                        </div>
+                      </td>
+                      <td className="p-4 text-right pr-6">
+                        <span className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 px-2.5 py-0.5 rounded-md font-bold text-[10px] uppercase tracking-wide inline-flex items-center gap-1">
+                          <ShieldCheck size={11} /> Active Live
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                  {registeredStudents.length === 0 && !studentsLoading && (
+                    <tr>
+                      <td colSpan="5" className="text-center py-12 text-[var(--muted)] font-mono text-xs uppercase tracking-widest">
+                        No signed-up student nodes discovered in this cluster.
                       </td>
                     </tr>
                   )}
