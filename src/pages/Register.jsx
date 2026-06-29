@@ -1,18 +1,22 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { User, Mail, Lock, ShieldCheck, Terminal, ArrowRight, AlertTriangle } from 'lucide-react';
+import { User, Mail, Lock, ShieldCheck, Terminal, ArrowRight, AlertTriangle, Phone, GraduationCap, Building2, CalendarDays } from 'lucide-react';
 
 const BACKEND_URL = import.meta.env.VITE_API_URL || 'http://localhost:5002/api';
 
 export default function Register() {
   const navigate = useNavigate();
 
-  // Registration Payload States Block
+  // 🆕 EXPANDED REGISTRATION PAYLOAD STATES BLOCK
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    password: ''
+    password: '',
+    mobile: '',
+    college: '',
+    degree: '',
+    semester: ''
   });
   const [otp, setOtp] = useState('');
 
@@ -54,11 +58,15 @@ export default function Register() {
     setLoading(true);
     setErrorMessage('');
 
-    // Packing structural configurations variables to align with route validations rules
+    // Packing all structured profile variables to match updated mongoose validation rules
     const targetPayloadData = {
       name: formData.name,
       email: formData.email,
       password: formData.password,
+      mobile: formData.mobile,
+      college: formData.college,
+      degree: formData.degree,
+      semester: formData.semester,
       otp: otp
     };
 
@@ -66,7 +74,7 @@ export default function Register() {
       const commitResponse = await axios.post(`${BACKEND_URL}/auth/verify-otp`, targetPayloadData);
 
       if (commitResponse.status === 201 && commitResponse.data.token) {
-        // 🚀 SUCCESS: Browser local storage mein sessions token parameters commit karo
+        // 🚀 SUCCESS: Save token parameter schemas instantly to browser localStorage
         localStorage.setItem('token', commitResponse.data.token);
         localStorage.setItem('user', JSON.stringify({
           name: commitResponse.data.name,
@@ -89,7 +97,7 @@ export default function Register() {
 
   return (
     <div className="min-h-screen bg-[#030712] text-white flex items-center justify-center p-6 antialiased font-sans">
-      <div className="w-full max-w-md bg-[#090d16] border border-slate-900 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
+      <div className="w-full max-w-lg bg-[#090d16] border border-slate-900 rounded-3xl p-8 shadow-2xl relative overflow-hidden my-10">
         
         {/* Subtle Decorative Background Accent Shimmer */}
         <div className="absolute -top-10 -right-10 w-32 h-32 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
@@ -119,10 +127,10 @@ export default function Register() {
           /* ========================================================= */
           /* STAGE QUADRANT A: CAPTURE PRIMARY DATA CREDENTIALS PACKETS */
           /* ========================================================= */
-          <form onSubmit={handleSendOtpPipeline} className="flex flex-col gap-5 text-sm relative z-10">
+          <form onSubmit={handleSendOtpPipeline} className="flex flex-col gap-4 text-sm relative z-10">
             
             <div>
-              <label className="text-slate-500 text-[11px] font-black uppercase tracking-wider block mb-2">
+              <label className="text-slate-500 text-[10px] font-black uppercase tracking-wider block mb-1.5">
                 Full Student Name Signature
               </label>
               <div className="relative">
@@ -132,32 +140,110 @@ export default function Register() {
                   placeholder="e.g., Gagan Puskar" 
                   value={formData.name} 
                   onChange={e => setFormData({ ...formData, name: e.target.value })} 
-                  className="w-full bg-[#030712] border border-slate-800 rounded-xl py-3.5 pl-11 pr-4 text-white placeholder-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 outline-none transition" 
+                  className="w-full bg-[#030712] border border-slate-800 rounded-xl py-3.5 pl-11 pr-4 text-white placeholder-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 outline-none transition text-xs" 
                   required 
                 />
               </div>
             </div>
 
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="text-slate-500 text-[10px] font-black uppercase tracking-wider block mb-1.5">
+                  Gmail Target Endpoint
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3.5 top-3.5 text-slate-600" size={16} />
+                  <input 
+                    type="email" 
+                    placeholder="student@gmail.com" 
+                    value={formData.email} 
+                    onChange={e => setFormData({ ...formData, email: e.target.value })} 
+                    className="w-full bg-[#030712] border border-slate-800 rounded-xl py-3.5 pl-11 pr-4 text-white placeholder-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 outline-none transition text-xs" 
+                    required 
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-slate-500 text-[10px] font-black uppercase tracking-wider block mb-1.5">
+                  Mobile Identity Parameter
+                </label>
+                <div className="relative">
+                  <Phone className="absolute left-3.5 top-3.5 text-slate-600" size={16} />
+                  <input 
+                    type="text" 
+                    placeholder="e.g., 9876543210" 
+                    maxLength={10}
+                    value={formData.mobile} 
+                    onChange={e => setFormData({ ...formData, mobile: e.target.value })} 
+                    className="w-full bg-[#030712] border border-slate-800 rounded-xl py-3.5 pl-11 pr-4 text-white placeholder-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 outline-none transition text-xs" 
+                    required 
+                  />
+                </div>
+              </div>
+            </div>
+
             <div>
-              <label className="text-slate-500 text-[11px] font-black uppercase tracking-wider block mb-2">
-                Gmail Address Target Endpoint
+              <label className="text-slate-500 text-[10px] font-black uppercase tracking-wider block mb-1.5">
+                Official College / Institution Entity
               </label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-3.5 text-slate-600" size={16} />
+                <Building2 className="absolute left-3.5 top-3.5 text-slate-600" size={16} />
                 <input 
-                  type="email" 
-                  placeholder="student@gmail.com" 
-                  value={formData.email} 
-                  onChange={e => setFormData({ ...formData, email: e.target.value })} 
-                  className="w-full bg-[#030712] border border-slate-800 rounded-xl py-3.5 pl-11 pr-4 text-white placeholder-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 outline-none transition" 
+                  type="text" 
+                  placeholder="e.g., Dr. A.P.J. Abdul Kalam Technical University" 
+                  value={formData.college} 
+                  onChange={e => setFormData({ ...formData, college: e.target.value })} 
+                  className="w-full bg-[#030712] border border-slate-800 rounded-xl py-3.5 pl-11 pr-4 text-white placeholder-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 outline-none transition text-xs" 
                   required 
                 />
               </div>
             </div>
 
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="text-slate-500 text-[10px] font-black uppercase tracking-wider block mb-1.5">
+                  Degree Course Track
+                </label>
+                <div className="relative">
+                  <GraduationCap className="absolute left-3.5 top-3.5 text-slate-600" size={16} />
+                  <input 
+                    type="text" 
+                    placeholder="e.g., B.Tech CS" 
+                    value={formData.degree} 
+                    onChange={e => setFormData({ ...formData, degree: e.target.value })} 
+                    className="w-full bg-[#030712] border border-slate-800 rounded-xl py-3.5 pl-11 pr-4 text-white placeholder-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 outline-none transition text-xs" 
+                    required 
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-slate-500 text-[10px] font-black uppercase tracking-wider block mb-1.5">
+                  Current Operational Semester
+                </label>
+                <div className="relative">
+                  <CalendarDays className="absolute left-3.5 top-3.5 text-slate-600" size={16} />
+                  <select 
+                    value={formData.semester} 
+                    onChange={e => setFormData({ ...formData, semester: e.target.value })} 
+                    className="w-full bg-[#030712] border border-slate-800 rounded-xl py-3.5 pl-11 pr-4 text-white focus:border-indigo-500 outline-none transition text-xs appearance-none cursor-pointer"
+                    required
+                  >
+                    <option value="" disabled className="text-slate-600">Select Semester</option>
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map(sem => (
+                      <option key={sem} value={`${sem}th Sem`} className="bg-[#090d16] text-white">
+                        {sem}th Semester
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
             <div>
-              <label className="text-slate-500 text-[11px] font-black uppercase tracking-wider block mb-2">
-                Secure Platform Access Token (Password)
+              <label className="text-slate-500 text-[10px] font-black uppercase tracking-wider block mb-1.5">
+                Platform Access Pass Token (Password)
               </label>
               <div className="relative">
                 <Lock className="absolute left-3.5 top-3.5 text-slate-600" size={16} />
@@ -166,7 +252,7 @@ export default function Register() {
                   placeholder="••••••••••••" 
                   value={formData.password} 
                   onChange={e => setFormData({ ...formData, password: e.target.value })} 
-                  className="w-full bg-[#030712] border border-slate-800 rounded-xl py-3.5 pl-11 pr-4 text-white placeholder-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 outline-none transition" 
+                  className="w-full bg-[#030712] border border-slate-800 rounded-xl py-3.5 pl-11 pr-4 text-white placeholder-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 outline-none transition text-xs" 
                   required 
                 />
               </div>
@@ -175,7 +261,7 @@ export default function Register() {
             <button 
               type="submit" 
               disabled={loading} 
-              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl uppercase tracking-wider text-xs flex items-center justify-center gap-2 transition mt-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-indigo-600/10 group"
+              className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl uppercase tracking-wider text-xs flex items-center justify-center gap-2 transition mt-3 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-indigo-600/10 group"
             >
               {loading ? "Constructing Security Packets..." : "Generate Verification OTP"}
               <ArrowRight size={14} className="group-hover:translate-x-0.5 transition" />
