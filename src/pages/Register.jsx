@@ -47,7 +47,7 @@ export default function Register() {
   };
 
   // -----------------------------------------------------------------
-  // WORKFLOW STEP 2: COMPLETE CRYPTOGRAPHIC HANDSHAKE & SAVE TO MONGODB
+  // WORKFLOW STEP 2: COMPLETE CRYPTOGRAPHIC HANDSHAKE & AUTOLOGIN
   // -----------------------------------------------------------------
   const handleVerifyAndRegisterCommit = async (e) => {
     e.preventDefault();
@@ -65,9 +65,19 @@ export default function Register() {
     try {
       const commitResponse = await axios.post(`${BACKEND_URL}/auth/verify-otp`, targetPayloadData);
 
-      if (commitResponse.status === 201) {
-        alert("Account integrity authentication verified! Identity committed to storage cluster database ledger seamlessly.");
-        navigate('/login');
+      if (commitResponse.status === 201 && commitResponse.data.token) {
+        // 🚀 SUCCESS: Browser local storage mein sessions token parameters commit karo
+        localStorage.setItem('token', commitResponse.data.token);
+        localStorage.setItem('user', JSON.stringify({
+          name: commitResponse.data.name,
+          email: commitResponse.data.email,
+          role: commitResponse.data.role
+        }));
+
+        alert("Account integrity authentication verified! Welcome to Codexon Hub.");
+        
+        // Direct seamless pipeline entry straight to dashboard node
+        navigate('/dashboard');
       }
     } catch (err) {
       console.error("Ledger storage write access failure trace logs:", err);
@@ -119,7 +129,7 @@ export default function Register() {
                 <User className="absolute left-3.5 top-3.5 text-slate-600" size={16} />
                 <input 
                   type="text" 
-                  placeholder="e.g., MANSI" 
+                  placeholder="e.g., Gagan Puskar" 
                   value={formData.name} 
                   onChange={e => setFormData({ ...formData, name: e.target.value })} 
                   className="w-full bg-[#030712] border border-slate-800 rounded-xl py-3.5 pl-11 pr-4 text-white placeholder-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 outline-none transition" 
