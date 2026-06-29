@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Terminal, User, BookOpen, Award, Briefcase, 
-  Layers, LogOut, CheckCircle2, Clock, Zap 
+  Layers, LogOut, CheckCircle2, Clock, Zap, ShieldCheck 
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [student, setStudent] = useState({ name: 'Developer', email: '' });
+  const [student, setStudent] = useState({ name: 'Developer', email: '', role: 'student' });
 
   // Load authorized student metadata token from memory ledger
   useEffect(() => {
@@ -27,11 +27,16 @@ export default function Dashboard() {
     navigate('/login');
   };
 
+  // 🔥 CHECK ACCESS: Agar email gagan ka hai ya role admin hai
+  const isAdmin = student.email === 'admin@pushkar.com' || 
+                  student.email === 'gaganpuskar2006@gmail.com' || 
+                  student.role === 'admin';
+
   return (
     <div className="min-h-screen bg-[#030712] text-white flex flex-col font-sans selection:bg-[#7c5cff]/30">
       {/* Background Gradient Orbs */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#7c5cff]/5 rounded-full blur-[120px] pointer-events-none"></div>
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#22d3ee]/5 rounded-full blur-[120px] pointer-events-none"></div>
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#7c5cff]/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#22d3ee]/5 rounded-full blur-[120px] pointer-events-none" />
 
       {/* 1. TOP HEADER NAVIGATION BAR */}
       <nav className="w-full border-b border-[#1e293b] bg-[#030712]/80 backdrop-blur-md px-6 py-4 flex items-center justify-between sticky top-0 z-50">
@@ -46,10 +51,28 @@ export default function Dashboard() {
         </div>
 
         <div className="flex items-center gap-4">
+          {/* 👑 DYNAMIC ADMIN ACCESS GATE TRIGGER */}
+          {isAdmin && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="relative group"
+            >
+              <Link 
+                to="/admin-panel"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30 hover:border-amber-500 text-amber-400 text-xs font-black uppercase tracking-wider transition duration-300 shadow-lg shadow-amber-500/5"
+              >
+                <ShieldCheck size={14} className="animate-pulse text-amber-400" />
+                Admin Panel
+              </Link>
+            </motion.div>
+          )}
+
           <div className="hidden sm:flex flex-col text-right">
             <span className="text-xs font-bold text-slate-200">{student.name}</span>
             <span className="text-[10px] text-[#64748b]">{student.email || 'student@codexonhub.in'}</span>
           </div>
+          
           <button 
             onClick={handleLogout}
             className="p-2 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition group"
@@ -67,7 +90,7 @@ export default function Dashboard() {
         <motion.div 
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-8 rounded-3xl border border-[#1e293b] portfolio-glass flex flex-col md:flex-row md:items-center justify-between gap-6"
+          className="p-8 rounded-3xl border border-[#1e293b] bg-[#090d16]/60 backdrop-blur-md flex flex-col md:flex-row md:items-center justify-between gap-6"
         >
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#22d3ee]/10 border border-[#22d3ee]/20 text-[#22d3ee] text-[10px] font-bold uppercase tracking-wider">
@@ -82,7 +105,7 @@ export default function Dashboard() {
             </div>
             <div>
               <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748b] block">Current Rank</span>
-              <span className="text-xs font-black text-white block">Frontend Trainee Node</span>
+              <span className="text-xs font-black text-white block">{isAdmin ? 'System Admin' : 'Frontend Trainee Node'}</span>
             </div>
           </div>
         </motion.div>
