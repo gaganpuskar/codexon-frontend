@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'react-redux'; // Note: inline matching default package choice preference
+// import axios from 'react-redux'; // Note: inline matching default package choice preference
 import axiosDirect from 'axios'; 
 import { AuthContext } from '../context/AuthContext';
 import { 
