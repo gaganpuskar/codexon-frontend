@@ -11,7 +11,8 @@ import {
   Layers, 
   CheckCircle2, 
   XCircle, 
-  Loader2 
+  Loader2,
+  Download 
 } from 'lucide-react';
 
 // CORE PLATFORM IMPORTS
@@ -226,30 +227,46 @@ export default function Internships() {
                                 </a>
                               </td>
                               <td className="p-4 text-right pr-6">
-                                <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider border ${
-                                  app.status === 'Accepted' 
-                                    ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20' 
-                                    : app.status === 'Rejected' 
-                                    ? 'bg-red-500/10 text-red-500 border-red-500/20' 
-                                    : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
-                                }`}>
-                                  {app.status === 'Accepted' ? (
-                                    <>
-                                      <CheckCircle2 size={12} className="text-emerald-500 dark:text-emerald-400 animate-pulse" />
-                                      <span>Cleared & Accepted 🎉</span>
-                                    </>
-                                  ) : app.status === 'Rejected' ? (
-                                    <>
-                                      <XCircle size={12} className="text-red-500" />
-                                      <span>Rejected</span>
-                                    </>
-                                  ) : (
-                                    <>
-                                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping" />
-                                      <span>Pending Sync ⏳</span>
-                                    </>
+                                <div className="flex items-center justify-end gap-3">
+                                  
+                                  {/* 🚨 DYNAMIC STATUS DISPLAY MODIFIER BLOCK */}
+                                  <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider border ${
+                                    app.status === 'Accepted' 
+                                      ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20' 
+                                      : app.status === 'Rejected' 
+                                      ? 'bg-red-500/10 text-red-500 border-red-500/20' 
+                                      : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+                                  }`}>
+                                    {app.status === 'Accepted' ? (
+                                      <>
+                                        <CheckCircle2 size={12} className="text-emerald-500 dark:text-emerald-400 animate-pulse" />
+                                        <span>Cleared & Accepted 🎉</span>
+                                      </>
+                                    ) : app.status === 'Rejected' ? (
+                                      <>
+                                        <XCircle size={12} className="text-red-500" />
+                                        <span>Rejected</span>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping" />
+                                        <span>Pending Sync ⏳</span>
+                                      </>
+                                    )}
+                                  </span>
+
+                                  {/* 📥 👑 FIXED ROUTING CORRIDOR NODE FOR ACCURATE API MAP CALL */}
+                                  {app.status === 'Accepted' && (
+                                    <a
+                                      href={`${BACKEND_URL}/internships/admin/applications/${app._id}/offer-letter`}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/40 text-emerald-400 text-xs font-black uppercase tracking-wider hover:border-emerald-400 hover:text-white transition shadow-lg transition-transform duration-200 transform hover:-translate-y-0.5"
+                                    >
+                                      <Download size={12} /> Offer Letter
+                                    </a>
                                   )}
-                                </span>
+                                </div>
                               </td>
                             </tr>
                           ))}
