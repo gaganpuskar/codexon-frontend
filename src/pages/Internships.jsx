@@ -86,26 +86,28 @@ export default function Internships() {
       document.body.appendChild(workerElement);
 
       // 3. PERFECT ABSOLUTE A4 COORDINATE CONFIGURATION MATRIX (Fixes Zoom / Right-Shift Offset)
-      const opt = {
-        margin:       0,
-        filename:     `Codexon_OfferLetter_${studentName.replace(/\s+/g, '_')}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { 
-          scale: 2, 
-          useCORS: true, 
-          letterRendering: true, 
-          logging: false,
-          width: 800,          // Elements horizontal boundary crop size
-          height: 1120,        // Elements vertical boundary crop size
-          x: 0,                // Absolute Left Coordinate Lock (No more Right-Shift) 🚨
-          y: 0,                // Absolute Top Coordinate Lock 🚨
-          scrollX: 0,
-          scrollY: 0,
-          windowWidth: 800,
-          windowHeight: 1120
-        },
-        jsPDF:        { unit: 'pt', format: 'a4', orientation: 'portrait' }
-      };
+     // Internships.jsx ke handleDownloadPDF function ke andar 'opt' ko isse replace kijiye:
+const opt = {
+  margin:       0,
+  filename:     `Codexon_OfferLetter_${studentName.replace(/\s+/g, '_')}.pdf`,
+  // 🚨 CHANGED: Using PNG with Scale 4 for lossless high-definition crisp text
+  image:        { type: 'png' }, 
+  html2canvas:  { 
+    scale: 4,            // 4x resolution boost (pure crisp rendering) 🚀
+    useCORS: true, 
+    letterRendering: true, 
+    logging: false,
+    width: 800,          
+    height: 1120,        
+    x: 0,                
+    y: 0,                
+    scrollX: 0,
+    scrollY: 0,
+    windowWidth: 800,
+    windowHeight: 1120
+  },
+  jsPDF:        { unit: 'pt', format: 'a4', orientation: 'portrait' }
+};
 
       // 4. Smooth structural pipeline rendering cycle loop execution
       if (window.html2pdf) {
