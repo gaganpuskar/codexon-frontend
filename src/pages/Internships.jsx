@@ -75,19 +75,21 @@ export default function Internships() {
 
       // 3. Exact scale metrics match rules parameters definition (A4 Bounds matching layout sizes)
       // Internships.jsx ke handleDownloadPDF function ke andar sirf 'opt' badalna hai:
+// Internships.jsx ke andar handleDownloadPDF function ke 'opt' variable ko isse patch karein:
 const opt = {
   margin:       0,
   filename:     `Codexon_OfferLetter_${studentName.replace(/\s+/g, '_')}.pdf`,
   image:        { type: 'jpeg', quality: 0.98 },
-  // 🚨 FIXED: Strict unit scaling with automatic scaling overrides
   html2canvas:  { 
     scale: 2, 
     useCORS: true, 
     letterRendering: true, 
     logging: false,
-    windowWidth: 800 // Forces canvas grid to render exactly at design width
+    windowWidth: 800
   },
-  jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' } // Direct Standard A4 size locking
+  jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
+  // 🚨 NEW CRITICAL ADDITION: Prevents canvas splitting or layout truncation across bounds
+  pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
 };
       // 4. Execution conversion workflow mapping loops
       if (window.html2pdf) {
