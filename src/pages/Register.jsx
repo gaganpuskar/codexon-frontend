@@ -137,7 +137,7 @@ export default function Register() {
                 <User className="absolute left-3.5 top-3.5 text-slate-600" size={16} />
                 <input 
                   type="text" 
-                  placeholder="e.g., Gagan Puskar" 
+                  placeholder="e.g., Mansi" 
                   value={formData.name} 
                   onChange={e => setFormData({ ...formData, name: e.target.value })} 
                   className="w-full bg-[#030712] border border-slate-800 rounded-xl py-3.5 pl-11 pr-4 text-white placeholder-slate-600 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/20 outline-none transition text-xs" 
