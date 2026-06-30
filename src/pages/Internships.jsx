@@ -60,7 +60,7 @@ export default function Internships() {
   }, [user]);
 
   // ========================================================================
-  // 📥 👑 CLIENT-SIDE HIGH DEFINITION DYNAMIC HTML-TO-PDF GENERATOR ENGINE
+  // 📥 👑 FIXED: HIGH DEFINITION HTML-TO-PDF GENERATOR ENGINE (NO CUTTING)
   // ========================================================================
   const handleDownloadPDF = async (appId, studentName) => {
     try {
@@ -71,37 +71,44 @@ export default function Internships() {
       // 2. Creating an isolated tracking virtual DOM block element
       const workerElement = document.createElement('div');
       workerElement.innerHTML = htmlContent;
+
+      // 🚨 CANVAS LAYOUT BOUNDS ALIGN FIX
+      // Container shadow aur unwanted margins ko filter out karna taaki offset shift na ho
+      const pageNode = workerElement.querySelector('.page');
+      if (pageNode) {
+        pageNode.style.margin = '0';
+        pageNode.style.boxShadow = 'none';
+      }
+
       document.body.appendChild(workerElement);
 
-      // 3. Exact scale metrics match rules parameters definition (A4 Bounds matching layout sizes)
-      // Internships.jsx ke handleDownloadPDF function ke andar sirf 'opt' badalna hai:
-// Internships.jsx ke andar handleDownloadPDF function ke 'opt' variable ko isse patch karein:
-const opt = {
-  margin:       0,
-  filename:     `Codexon_OfferLetter_${studentName.replace(/\s+/g, '_')}.pdf`,
-  image:        { type: 'jpeg', quality: 0.98 },
-  html2canvas:  { 
-    scale: 2, 
-    useCORS: true, 
-    letterRendering: true, 
-    logging: false,
-    windowWidth: 800
-  },
-  jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
-  // 🚨 NEW CRITICAL ADDITION: Prevents canvas splitting or layout truncation across bounds
-  pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
-};
-      // 4. Execution conversion workflow mapping loops
+      // 3. EXACT RATIO BOUNDARY MATCHING IN 'pt' UNITS (Strict 800px Layout Viewport)
+      const opt = {
+        margin:       0,
+        filename:     `Codexon_OfferLetter_${studentName.replace(/\s+/g, '_')}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { 
+          scale: 2, 
+          useCORS: true, 
+          letterRendering: true, 
+          logging: false,
+          width: 800,        // Strict design layout capture coordinates width
+          windowWidth: 800   // Virtual view node bounds alignment lock
+        },
+        jsPDF:        { unit: 'pt', format: 'a4', orientation: 'portrait', hotfixes: ['px_scaling'] }
+      };
+
+      // 4. Smooth structural pipeline rendering cycle loop execution
       if (window.html2pdf) {
-        window.html2pdf().from(workerElement).set(opt).save().then(() => {
-          document.body.removeChild(workerElement); // Freeing context operational memory structures
+        window.html2pdf().from(workerElement).set(opt).toContainer().toCanvas().toPdf().save().then(() => {
+          document.body.removeChild(workerElement); // Freeing memory space safely
         });
       } else {
-        alert("PDF Canvas Compilation Script is loading. Please give system a clean refresh reload step.");
+        alert("PDF Canvas Library is loading. Please give a clean page refresh reload.");
       }
 
     } catch (err) {
-      console.error("PDF integration tracking matrix path trace loop crash:", err);
+      console.error("PDF integration pipeline trace loop crash:", err);
       alert("Error processing clean document conversion layout package: " + err.message);
     }
   };
@@ -302,7 +309,7 @@ const opt = {
                                     )}
                                   </span>
 
-                                  {/* 📥 🆕 HIGH DENSITY PDF GENERATION DYNAMIC TRIGGER ACTION NODE */}
+                                  {/* 📥 🆕 HIGH DENSITY COMPILATION PERFECT ALIGNED PDF DOWNLOAD TRIGGER */}
                                   {app.status === 'Accepted' && (
                                     <button
                                       onClick={() => handleDownloadPDF(app._id, app.studentName)}
@@ -348,7 +355,7 @@ const opt = {
                     <GraduationCap className="absolute left-3.5 top-3.5 text-[var(--muted)]" size={15} />
                     <input 
                       type="text" 
-                      placeholder="e.g., Dr. A.P.J. Abdul Kalam Technical University" 
+                      placeholder="e.g., Core Institute Architecture" 
                       value={appForm.collegeName} 
                       onChange={e => setAppForm({ ...appForm, collegeName: e.target.value })} 
                       className="w-full bg-transparent border border-[var(--border)] rounded-xl py-3 pl-10 pr-4 text-[var(--text)] placeholder-[var(--muted)] outline-none focus:border-[#22d3ee] transition" 
