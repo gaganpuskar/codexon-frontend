@@ -57,7 +57,7 @@ export default function Login() {
             <label className="text-slate-500 text-xs font-bold uppercase tracking-wider block mb-2">Gmail Address Identifier</label>
             <div className="relative">
               <Mail className="absolute left-3 top-3 text-slate-600" size={16} />
-              <input type="email" placeholder="admin@pushkar.com" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full bg-[#030712] border border-slate-800 rounded-xl p-3 pl-10 text-white focus:border-indigo-500 outline-none" required />
+              <input type="email" placeholder="name@gmail.com" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full bg-[#030712] border border-slate-800 rounded-xl p-3 pl-10 text-white focus:border-indigo-500 outline-none" required />
             </div>
           </div>
 
