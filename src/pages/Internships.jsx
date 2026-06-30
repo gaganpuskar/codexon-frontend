@@ -59,6 +59,44 @@ export default function Internships() {
     fetchData(); 
   }, [user]);
 
+  // ========================================================================
+  // 📥 👑 CLIENT-SIDE HIGH DEFINITION DYNAMIC HTML-TO-PDF GENERATOR ENGINE
+  // ========================================================================
+  const handleDownloadPDF = async (appId, studentName) => {
+    try {
+      // 1. Backend template corridor se custom brand layout markup pull karna
+      const response = await axios.get(`${BACKEND_URL}/internships/admin/applications/${appId}/offer-letter`);
+      const htmlContent = response.data;
+
+      // 2. Creating an isolated tracking virtual DOM block element
+      const workerElement = document.createElement('div');
+      workerElement.innerHTML = htmlContent;
+      document.body.appendChild(workerElement);
+
+      // 3. Exact scale metrics match rules parameters definition (A4 Bounds matching layout sizes)
+      const opt = {
+        margin:       0,
+        filename:     `Codexon_OfferLetter_${studentName.replace(/\s+/g, '_')}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, letterRendering: true, logging: false },
+        jsPDF:        { unit: 'px', format: [800, 1120], orientation: 'portrait' }
+      };
+
+      // 4. Execution conversion workflow mapping loops
+      if (window.html2pdf) {
+        window.html2pdf().from(workerElement).set(opt).save().then(() => {
+          document.body.removeChild(workerElement); // Freeing context operational memory structures
+        });
+      } else {
+        alert("PDF Canvas Compilation Script is loading. Please give system a clean refresh reload step.");
+      }
+
+    } catch (err) {
+      console.error("PDF integration tracking matrix path trace loop crash:", err);
+      alert("Error processing clean document conversion layout package: " + err.message);
+    }
+  };
+
   const handleApplyClick = (intern) => {
     if (!user) return alert("Security context token absent. Please sign in to activate pipeline!");
     setSelectedIntern(intern);
@@ -229,7 +267,7 @@ export default function Internships() {
                               <td className="p-4 text-right pr-6">
                                 <div className="flex items-center justify-end gap-3">
                                   
-                                  {/* 🚨 DYNAMIC STATUS DISPLAY MODIFIER BLOCK */}
+                                  {/* DYNAMIC STATUS DISPLAY MODIFIER BLOCK */}
                                   <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black uppercase tracking-wider border ${
                                     app.status === 'Accepted' 
                                       ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20' 
@@ -255,16 +293,14 @@ export default function Internships() {
                                     )}
                                   </span>
 
-                                  {/* 📥 👑 FIXED ROUTING CORRIDOR NODE FOR ACCURATE API MAP CALL */}
+                                  {/* 📥 🆕 HIGH DENSITY PDF GENERATION DYNAMIC TRIGGER ACTION NODE */}
                                   {app.status === 'Accepted' && (
-                                    <a
-                                      href={`${BACKEND_URL}/internships/admin/applications/${app._id}/offer-letter`}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/40 text-emerald-400 text-xs font-black uppercase tracking-wider hover:border-emerald-400 hover:text-white transition shadow-lg transition-transform duration-200 transform hover:-translate-y-0.5"
+                                    <button
+                                      onClick={() => handleDownloadPDF(app._id, app.studentName)}
+                                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500/20 to-teal-500/20 border border-emerald-500/40 text-emerald-400 text-xs font-black uppercase tracking-wider hover:border-emerald-400 hover:text-white transition shadow-lg transition-transform duration-200 transform hover:-translate-y-0.5 cursor-pointer"
                                     >
-                                      <Download size={12} /> Offer Letter
-                                    </a>
+                                      <Download size={12} /> PDF Offer Letter
+                                    </button>
                                   )}
                                 </div>
                               </td>
@@ -303,7 +339,7 @@ export default function Internships() {
                     <GraduationCap className="absolute left-3.5 top-3.5 text-[var(--muted)]" size={15} />
                     <input 
                       type="text" 
-                      placeholder="e.g., Technocrat Core Institute" 
+                      placeholder="e.g., Dr. A.P.J. Abdul Kalam Technical University" 
                       value={appForm.collegeName} 
                       onChange={e => setAppForm({ ...appForm, collegeName: e.target.value })} 
                       className="w-full bg-transparent border border-[var(--border)] rounded-xl py-3 pl-10 pr-4 text-[var(--text)] placeholder-[var(--muted)] outline-none focus:border-[#22d3ee] transition" 
