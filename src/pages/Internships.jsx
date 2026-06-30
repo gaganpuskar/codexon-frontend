@@ -60,7 +60,7 @@ export default function Internships() {
   }, [user]);
 
   // ========================================================================
-  // 📥 👑 FIXED: HIGH DEFINITION HTML-TO-PDF GENERATOR ENGINE (NO CUTTING)
+  // 📥 👑 ABSOLUTE COORDINATE LOCK: HTML-TO-PDF GENERATOR ENGINE (NO SHIFTING)
   // ========================================================================
   const handleDownloadPDF = async (appId, studentName) => {
     try {
@@ -72,17 +72,20 @@ export default function Internships() {
       const workerElement = document.createElement('div');
       workerElement.innerHTML = htmlContent;
 
-      // 🚨 CANVAS LAYOUT BOUNDS ALIGN FIX
-      // Container shadow aur unwanted margins ko filter out karna taaki offset shift na ho
+      // 🚨 CANVAS CONTAINER ORIGIN BOUNDS HARD RESET
+      // HTML container ko direct zero absolute alignment par lock karna taaki layout text alignment coordinates safe rahein
       const pageNode = workerElement.querySelector('.page');
       if (pageNode) {
         pageNode.style.margin = '0';
         pageNode.style.boxShadow = 'none';
+        pageNode.style.position = 'relative';
+        pageNode.style.left = '0';
+        pageNode.style.top = '0';
       }
 
       document.body.appendChild(workerElement);
 
-      // 3. EXACT RATIO BOUNDARY MATCHING IN 'pt' UNITS (Strict 800px Layout Viewport)
+      // 3. PERFECT ABSOLUTE A4 COORDINATE CONFIGURATION MATRIX (Fixes Zoom / Right-Shift Offset)
       const opt = {
         margin:       0,
         filename:     `Codexon_OfferLetter_${studentName.replace(/\s+/g, '_')}.pdf`,
@@ -92,16 +95,22 @@ export default function Internships() {
           useCORS: true, 
           letterRendering: true, 
           logging: false,
-          width: 800,        // Strict design layout capture coordinates width
-          windowWidth: 800   // Virtual view node bounds alignment lock
+          width: 800,          // Elements horizontal boundary crop size
+          height: 1120,        // Elements vertical boundary crop size
+          x: 0,                // Absolute Left Coordinate Lock (No more Right-Shift) 🚨
+          y: 0,                // Absolute Top Coordinate Lock 🚨
+          scrollX: 0,
+          scrollY: 0,
+          windowWidth: 800,
+          windowHeight: 1120
         },
-        jsPDF:        { unit: 'pt', format: 'a4', orientation: 'portrait', hotfixes: ['px_scaling'] }
+        jsPDF:        { unit: 'pt', format: 'a4', orientation: 'portrait' }
       };
 
       // 4. Smooth structural pipeline rendering cycle loop execution
       if (window.html2pdf) {
-        window.html2pdf().from(workerElement).set(opt).toContainer().toCanvas().toPdf().save().then(() => {
-          document.body.removeChild(workerElement); // Freeing memory space safely
+        window.html2pdf().from(workerElement).set(opt).save().then(() => {
+          document.body.removeChild(workerElement); // Freeing memory space safely from document viewport
         });
       } else {
         alert("PDF Canvas Library is loading. Please give a clean page refresh reload.");
@@ -309,7 +318,7 @@ export default function Internships() {
                                     )}
                                   </span>
 
-                                  {/* 📥 🆕 HIGH DENSITY COMPILATION PERFECT ALIGNED PDF DOWNLOAD TRIGGER */}
+                                  {/* 📥 HIGH DENSITY COORDINATE LOCKED PDF DOWNLOAD TRIGGER NODE */}
                                   {app.status === 'Accepted' && (
                                     <button
                                       onClick={() => handleDownloadPDF(app._id, app.studentName)}
@@ -355,7 +364,7 @@ export default function Internships() {
                     <GraduationCap className="absolute left-3.5 top-3.5 text-[var(--muted)]" size={15} />
                     <input 
                       type="text" 
-                      placeholder="e.g., Core Institute Architecture" 
+                      placeholder="e.g., Institute of Engineering Technology" 
                       value={appForm.collegeName} 
                       onChange={e => setAppForm({ ...appForm, collegeName: e.target.value })} 
                       className="w-full bg-transparent border border-[var(--border)] rounded-xl py-3 pl-10 pr-4 text-[var(--text)] placeholder-[var(--muted)] outline-none focus:border-[#22d3ee] transition" 
